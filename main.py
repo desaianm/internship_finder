@@ -168,6 +168,7 @@ def get_resume():
 class generate_analysis(dspy.Signature):
     """
     Act as a ATS Tool and Find Best internships from context for resume by analyzing resume and internship.
+    give some detailed analysis of how the resume matches with the internship.
     output of list of internships in below format: 
     {
     "name": "",
@@ -200,32 +201,37 @@ def main():
     file = st.file_uploader("Upload Resume to get started", type=["pdf"])
     
     
-    col_company, col_url, col_analysis = st.columns([2,6,2])
+    
 
     if file is not None:
         msg = st.toast("Resume Uploaded")
         if check_resume(file):
-            resume = resume_into_json(file)
+            with st.status("Extracting Details from  Resume"):
+                resume = resume_into_json(file)
+                st.write(resume)
             analysis = Internship_finder()
             generate_analysis = analysis(resume)
+
+            st.subheader("List of Internships :")
+
+            col_company, col_url = st.columns([2,6])
             
-            msg.toast("Analysis Completed")
+            
             interns = json.loads(generate_analysis)
+            
             with col_company:
-                st.subheader("Companies")
-                for intern in interns:
-                    st.link_button(intern["company"],company_url(intern["company"]))
-            
+                    for intern in interns:
+                        st.link_button(intern["company"],company_url(intern["company"]))
+                
             with col_url:
-                st.subheader("Internships")
-                for intern in interns:
-                    st.link_button(intern["name"], intern["apply_link"])
+                    for intern in interns:
+                        st.link_button(intern["name"], intern["apply_link"])
+                        with st.status("Match Analysis"):
+                    
+                            st.write(intern["match_analysis"])
+
             
-            with col_analysis:
-                st.subheader("Analysis")
-                for intern in interns:
-                    with st.expander("More Details"):
-                        st.write(intern["match_analysis"])
+
 
             if interns is None:
                 msg.toast("No Internships Found")    
