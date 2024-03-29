@@ -50,7 +50,7 @@ class Out_Internship(BaseModel):
 def search_datbase(query):
     response = questions.query.hybrid(
         query=query,
-        limit=3
+        limit=7
     )
 
     interns = []
@@ -200,9 +200,6 @@ def main():
         
     file = st.file_uploader("Upload Resume to get started", type=["pdf"])
     
-    
-    
-
     if file is not None:
         msg = st.toast("Resume Uploaded")
         if check_resume(file):
@@ -227,7 +224,6 @@ def main():
                     for intern in interns:
                         st.link_button(intern["name"], intern["apply_link"])
                         with st.status("Match Analysis"):
-                    
                             st.write(intern["match_analysis"])
 
             
