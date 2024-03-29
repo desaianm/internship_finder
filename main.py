@@ -7,7 +7,7 @@ import streamlit as st
 from typing import Optional, List
 from datetime import datetime
 from pydantic import BaseModel, Field, HttpUrl
-from tools import resume_into_json
+from tools import resume_into_json, company_url
 import nltk
 from PyPDF2 import PdfReader
 
@@ -214,7 +214,7 @@ def main():
             with col_company:
                 st.subheader("Companies")
                 for intern in interns:
-                    st.link_button(intern["company"], intern["apply_link"])
+                    st.link_button(intern["company"],company_url(intern["company"]))
             
             with col_url:
                 st.subheader("Internships")

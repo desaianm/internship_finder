@@ -2,7 +2,7 @@
 import json
 from PyPDF2 import PdfReader
 from openai import OpenAI
-import streamlit as st
+
 
 def resume_into_json(resume):
     pdf_reader = PdfReader(resume)
@@ -26,3 +26,12 @@ def resume_into_json(resume):
     
     
     return json.loads(response.choices[0].message.content)
+
+def company_url(company):
+
+    if company == "Astranis":
+        return "https://www.jeezai.com/companies/astranis-space-technologies"
+    
+    company = (company.lower()).replace(" ", "-")
+
+    return f"https://www.jeezai.com/companies/{company}/"
