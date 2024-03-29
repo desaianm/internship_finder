@@ -9,6 +9,7 @@ from datetime import datetime
 from pydantic import BaseModel, Field, HttpUrl
 from tools import resume_into_json
 import nltk
+from PyPDF2 import PdfReader
 
 gpt4 = dspy.OpenAI(model="gpt-3.5-turbo-1106")
 
@@ -62,7 +63,16 @@ def search_datbase(query):
     context = json.dumps(interns)
     return json.loads(context)
 
-def check_resume(text):
+def check_resume(resume):
+    if (resume != None):
+        pdf_reader = PdfReader(resume)
+        text=""
+        for page_num in range(len(pdf_reader.pages)):
+                
+                page = pdf_reader.pages[page_num]
+                
+                # Extract text from the page
+                text += page.extract_text()
     nltk.download('punkt')  # Ensure the tokenizer is available
     tokens = nltk.word_tokenize(text)
     
@@ -196,8 +206,8 @@ def main():
 
     if file is not None:
         msg = st.toast("Resume Uploaded")
-        resume = resume_into_json(file)
-        if check_resume(resume):
+        if check_resume(file):
+            resume = resume_into_json(file)
             analysis = Internship_finder()
             generate_analysis = analysis(resume)
             
