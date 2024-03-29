@@ -3,3 +3,4 @@ weaviate-client
 streamlit
 pydantic
 PyPDF2
+nltk

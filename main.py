@@ -8,6 +8,7 @@ from typing import Optional, List
 from datetime import datetime
 from pydantic import BaseModel, Field, HttpUrl
 from tools import resume_into_json
+import nltk
 
 gpt4 = dspy.OpenAI(model="gpt-3.5-turbo-1106")
 
@@ -61,6 +62,25 @@ def search_datbase(query):
     context = json.dumps(interns)
     return json.loads(context)
 
+def check_resume(text):
+    nltk.download('punkt')  # Ensure the tokenizer is available
+    tokens = nltk.word_tokenize(text)
+    
+    # Check if the total character count of all tokens exceeds the limit
+    total_length = sum(len(token) for token in tokens)
+    if total_length >= 16000:
+        return False  # Return False if the total length of tokens exceeds the limit
+
+    tokens_to_check = ["summary", "skills", "experience", "projects", "education"]
+    
+    # Convert tokens to lower case for case-insensitive comparison
+    text_tokens_lower = [token.lower() for token in tokens]
+
+    # Check if any of the specified tokens are in the tokenized text
+    tokens_found = [token for token in tokens_to_check if token.lower() in text_tokens_lower]
+
+    # Return False if none of the specified tokens were found, True otherwise
+    return bool(tokens_found)
 
 
 
@@ -177,31 +197,33 @@ def main():
     if file is not None:
         msg = st.toast("Resume Uploaded")
         resume = resume_into_json(file)
-        analysis = Internship_finder()
-        generate_analysis = analysis(resume)
-        
-        msg.toast("Analysis Completed")
-        interns = json.loads(generate_analysis)
-        with col_company:
-            st.subheader("Companies")
-            for intern in interns:
-                st.link_button(intern["company"], intern["apply_link"])
-        
-        with col_url:
-            st.subheader("Internships")
-            for intern in interns:
-                st.link_button(intern["name"], intern["apply_link"])
-        
-        with col_analysis:
-            st.subheader("Analysis")
-            for intern in interns:
-                with st.expander("More Details"):
-                    st.write(intern["match_analysis"])
+        if check_resume(resume):
+            analysis = Internship_finder()
+            generate_analysis = analysis(resume)
+            
+            msg.toast("Analysis Completed")
+            interns = json.loads(generate_analysis)
+            with col_company:
+                st.subheader("Companies")
+                for intern in interns:
+                    st.link_button(intern["company"], intern["apply_link"])
+            
+            with col_url:
+                st.subheader("Internships")
+                for intern in interns:
+                    st.link_button(intern["name"], intern["apply_link"])
+            
+            with col_analysis:
+                st.subheader("Analysis")
+                for intern in interns:
+                    with st.expander("More Details"):
+                        st.write(intern["match_analysis"])
 
-        if interns is None:
-            msg.toast("No Internships Found")    
-        msg.toast("Internships Found !!")
-    
+            if interns is None:
+                msg.toast("No Internships Found")    
+            msg.toast("Internships Found !!")
+        else:
+            st.warning("Invalid File Uploaded !!")
 
 
 if __name__ == "__main__":
