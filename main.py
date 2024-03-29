@@ -18,8 +18,7 @@ openai_api_key = os.getenv("OPENAI_API_KEY")
 # Connect to Weaviate
 weaviate_client = weaviate.connect_to_wcs(
     cluster_url=url,  
-    auth_credentials=weaviate.auth.AuthApiKey(apikey
-    ),
+    auth_credentials=weaviate.auth.AuthApiKey(apikey),
         headers={
         "X-OpenAI-Api-Key": openai_api_key  
     }  
