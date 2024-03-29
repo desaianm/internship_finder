@@ -1,4 +1,4 @@
-dspy-ai==2.4.0  # or just dspy if it's a different package
-weaviate-client==4.5.4
-streamlit==1.32.2
-pydantic==2.6.4
+dspy-ai>=2.4.0
+weaviate-client>=4.5.0
+streamlit>=1.32.0
+pydantic>=2.6.0
