@@ -202,8 +202,6 @@ def main():
     
     col_company, col_url, col_analysis = st.columns([2,6,2])
 
-    
-
     if file is not None:
         msg = st.toast("Resume Uploaded")
         if check_resume(file):
