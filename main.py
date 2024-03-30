@@ -122,18 +122,6 @@ class Internship_finder(dspy.Module):
             
         analysis = self.generate_analysis(resume=str(resume), context=context).output
               
-        # """ engaging_question = "Is the Analysis correct check internships to find match with resume skills, experience, projects and education? reply with either yes or no"
-        # engaging_assessment = dspy.Predict("context, assessed_text, assessment_question -> assessment_answer")(
-        #         context=context, assessed_text=analysis, assessment_question=engaging_question)
-        # msg = st.toast("Analysis Test  1 Completed")
-        # dspy.Suggest(check_answer(engaging_assessment.assessment_answer), "Please revise to make it more captivating.")
-
-        # check_question = "Is the output as desired ? reply with either yes or no"    
-        # final_check = dspy.Predict("context, assessed_text, assessment_question -> assessment_answer")(
-        #     context=context, assessed_text=analysis, assessment_question=check_question)
-        #  """
-        
-        #dspy.Suggest(check_answer(final_check.assessment_answer), "The analysis is not good. Retry the function")
         return analysis
 
 def deduplicate(context):
