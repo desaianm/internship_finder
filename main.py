@@ -118,7 +118,7 @@ class Internship_finder(dspy.Module):
 
         context = deduplicate(passages)    
         context.append(resume)
-        my_bar.progress(60,text="Generating Analysis")
+        my_bar.progress(60,text="Doing Analysis")
             
         analysis = self.generate_analysis(resume=str(resume), context=context).output
               
@@ -157,31 +157,46 @@ def get_resume():
 
 class generate_analysis(dspy.Signature):
     """
-    You are an expert matchmaking manager for students and AI companies. Your goal is to analyze a student's resume and match it to the most relevant and best-fit AI engineering internship opportunities.
+        Your Role:
 
-    Carefully review the student's resume to identify their:
+    You are an AI-powered ATS (Applicant Tracking System) matchmaking tool specializing in connecting students with the perfect  internship opportunities.
 
-    Educational background (degree, major, university, relevant coursework)
-    Work experience (past internships, jobs, projects)
-    Technical skills (programming languages, ML/AI frameworks, tools)
-    Relevant project experience (especially ML/AI projects)
-    Based on the student's qualifications, identify the top 5 AI internships that best match their skills and experience.
+    Input:
 
-    Look for:
-    Firstly, make sure education background in resume. if it does not have master's degree, don't consider research internships
-    Strong overlap in required/preferred skills, especially AI/ML/data skills
-    Matching programming languages and tools (Python, TensorFlow, PyTorch, etc.)
-    Relevant past project or internship experience in AI/ML
-    Alignment of education background and coursework
-    By carefully analyzing the student's AI/ML domain qualifications and matching them with the most relevant internships, you will play a key role in launching their AI career.  If a student focusing on engineering, find the most compatible engineering ones; if it's research, find research related ones
- 
+    Student Resume (Text): This text will contain the student's educational background (degree, major, university, relevant coursework), work experience (past internships, jobs, projects), technical skills (programming languages, ML/AI frameworks, tools), and relevant project experience (especially ML/AI projects).
+    Internship Listings : This  data structure will contain information on various AI engineering internships, including descriptions, required skills and experience, and educational requirements (e.g., minimum degree level).
+    
+    Matching Criteria:
+
+    Most important is Educational Background or Qualifications or Requirments:
+    Consider degree level (undergraduate, graduate, PhD) and major for matching. 
+    Include relevant coursework details in the justification if it aligns well with the internship focus.
+    Skill and Experience Match:
+    Identify strong overlap between the internship's required skills (programming languages, ML/AI frameworks, tools) and the student's skills listed on the resume.
+    Priotize matches between specific tools and frameworks mentioned in both the resume and internship description.
+    Project Experience:
+    Analyze the student's past projects and internships for relevance to the internship requirements.
+    Highlight projects that demonstrate similar problem-solving approaches or technological skills sought by the internship.
+    Additional Considerations:
+    Prioritize internships with a strong match across multiple criteria (education, skills, experience) for the top rankings.
+    
+    In addition to the previous criteria, make sure internships found are:
+    Does not mention "research" or "researcher" in the title, description, or required skills.
+    Focus on areas like "development," "engineering," "application," or "implementation" which align better with practical experience.
+
     output of list of internships in below format: 
-    {
-    "name": "",
-    "company": "",
-    "apply_link": "",
-    "match_analysis": ""
-    }
+    
+    Output:
+    list of internships (JSON Array):  Provide a JSON array containing information on the top 5 internship opportunities that best match the student's profile based on the information in their resume. Each element in the array should be a JSON object with the following properties:
+
+    "name" (string): Name of the internship opportunity.
+    "company" (string): Name of the company offering the internship.
+    "apply_link" (string): Link to apply for the internship .
+    "match_analysis" (string): A detailed analysis explaining why it's a good fit for the student. This analysis should highlight specific skills, experiences, and educational background aspects from the student's resume that align with the internship requirements.
+    
+    No Matches: If no internships are a good fit, return "None".
+    
+    
     """
     
     context = dspy.InputField(desc="Internships")
@@ -218,27 +233,25 @@ def main():
             
             generate_analysis = analysis(resume)
 
-            st.subheader("List of Internships :")
-
-            col_company, col_url = st.columns([2,6])
+            if generate_analysis !="None":
+                st.subheader("List of Internships:")
+                col_company, col_url = st.columns([2,6])
+                interns = json.loads(generate_analysis)
+                my_bar.progress(100, "Internships Found !!")
+                with col_company:
+                        for intern in interns:
+                            st.link_button(intern["company"],company_url(intern["company"]))
+                    
+                with col_url:
+                        for intern in interns:
+                            st.link_button(intern["name"], intern["apply_link"])
+                            with st.status("Match Analysis"):
+                                st.write(intern["match_analysis"])
+            else:
+                my_bar.progress(100, "Sorry, No Internships Found for you !!")
+                st.write(" We are adding more internships every day, please check back later.")
             
             
-            interns = json.loads(generate_analysis)
-            my_bar.progress(100, "Internships Found !!")
-            with col_company:
-                    for intern in interns:
-                        st.link_button(intern["company"],company_url(intern["company"]))
-                
-            with col_url:
-                    for intern in interns:
-                        st.link_button(intern["name"], intern["apply_link"])
-                        with st.status("Match Analysis"):
-                            st.write(intern["match_analysis"])
-
-            
-            if interns is None:
-                msg.toast("No Internships Found")    
-            msg.toast("Internships Found !!")
         else:
             st.warning("Invalid File Uploaded !!")
             my_bar.progress(0,text="Invalid File Uploaded")
