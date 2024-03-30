@@ -167,13 +167,13 @@ class generate_analysis(dspy.Signature):
     
     Matching Criteria:
 
-    Most important is Educational Background or Qualifications or Requirments:
-    Consider degree level (undergraduate, graduate, PhD) and major for matching. 
+    Most important is Educational Background :
+    match education of student with degree level (undergraduate, graduate, PhD) and major required in internship for matching. 
     Include relevant coursework details in the justification if it aligns well with the internship focus.
     Skill and Experience Match:
     Identify strong overlap between the internship's required skills (programming languages, ML/AI frameworks, tools) and the student's skills listed on the resume.
     Make sure  specific tools and frameworks mentioned in both the resume and internship description matches or relevant experience found.
-    Project Experience:
+    Project Experience :
     Analyze the student's past projects and internships for relevance to the internship requirements by focusing on the project's technical details.
     Highlight projects that demonstrate technological skills sought by the internship.
     Additional Considerations:
