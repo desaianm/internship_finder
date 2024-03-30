@@ -12,7 +12,7 @@ import nltk
 from PyPDF2 import PdfReader
 import time
 
-gpt4 = dspy.OpenAI(model="gpt-4-0125-preview")
+gpt4 = dspy.OpenAI(model="gpt-4-0125-preview",temperature=0.2)
 
 url = "https://internships-hc3oiv0y.weaviate.network"
 apikey = os.getenv("WCS_API_KEY")
@@ -116,8 +116,7 @@ class Internship_finder(dspy.Module):
             info=search_datbase(query)
             passages.append(info)
 
-        context = deduplicate(passages)    
-        context.append(resume)
+        context = deduplicate(passages)  
         my_bar.progress(60,text="Doing Analysis")
             
         analysis = self.generate_analysis(resume=str(resume), context=context).output
@@ -157,9 +156,9 @@ def get_resume():
 
 class generate_analysis(dspy.Signature):
     """
-        Your Role:
+    Your Role:
 
-    You are an AI-powered ATS (Applicant Tracking System) matchmaking tool specializing in connecting students with the perfect  internship opportunities.
+    You are an  matchmaking manager specializing in connecting students with the perfect internship opportunities.
 
     Input:
 
@@ -173,10 +172,11 @@ class generate_analysis(dspy.Signature):
     Include relevant coursework details in the justification if it aligns well with the internship focus.
     Skill and Experience Match:
     Identify strong overlap between the internship's required skills (programming languages, ML/AI frameworks, tools) and the student's skills listed on the resume.
+    Make sure the student's skills are relevant to the internship requirements.
     Make sure  specific tools and frameworks mentioned in both the resume and internship description matches or relevant experience found.
     Project Experience:
-    Analyze the student's past projects and internships for relevance to the internship requirements.
-    Highlight projects that demonstrate similar problem-solving approaches or technological skills sought by the internship.
+    Analyze the student's past projects and internships for relevance to the internship requirements by focusing on the project's technical details.
+    Highlight projects that demonstrate technological skills sought by the internship.
     Additional Considerations:
     Prioritize internships with a strong match across multiple criteria (education, skills, experience) for the top rankings.
     
