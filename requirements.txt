@@ -4,3 +4,5 @@ streamlit
 pydantic
 PyPDF2
 nltk
+anthropic
+time
