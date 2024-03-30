@@ -1,0 +1,7 @@
+dspy-ai
+weaviate-client
+streamlit
+pydantic
+PyPDF2
+nltk
+anthropic
