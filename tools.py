@@ -1,7 +1,8 @@
-
+import anthropic
 import json
 from PyPDF2 import PdfReader
 from openai import OpenAI
+import os
 
 
 def resume_into_json(resume):
@@ -11,21 +12,22 @@ def resume_into_json(resume):
         page = pdf_reader.pages[page_num]
         text += page.extract_text()
 
-    client = OpenAI()
+    api_key = os.getenv("CLAUDE_API_KEY")
+    client = client = anthropic.Anthropic(
+    api_key=api_key,
+    )   
 
-    prompt = f" don't give any explantion. please analyze and convert file data from this {text} into  json, remove data like name, email or personal information and  please return only json file  "
+    prompt = f" Act as Master in extracting data from resume.don't give any explantion. please analyze and convert resume data from this {text} into  json, remove data like name, email or personal information and  please return only json file  "
 
-    response = client.chat.completions.create(
-            model="gpt-4-0125-preview",
-              response_format={ "type": "json_object" },  # Adjust the model identifier as needed
-        messages=[
-            {"role": "system", "content": "You are a helpful assistant designed to output JSON."},
-            {"role": "user", "content": prompt}
-        ],temperature=0.2
-    )
+    response = client.messages.create(
+            model="claude-3-haiku-20240307",
+            max_tokens=4000,
+            messages=[
+                {"role": "user", "content": prompt}
+        ]
+    ).content[0].text
     
-    
-    return json.loads(response.choices[0].message.content)
+    return json.loads(response)
 
 def company_url(company):
 
