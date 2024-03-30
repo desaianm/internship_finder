@@ -169,29 +169,25 @@ def get_resume():
 
 class generate_analysis(dspy.Signature):
     """
-    You are an expert matchmaking manager for students and AI companies. You analyze a student's resume and match it to the most relevant and best-fit internship opportunities. 
-    Your goal is to help students find internships and companies that align well with their skills, experience, education, and career interests.
+    You are an expert matchmaking manager for students and AI companies. Your goal is to analyze a student's resume and match it to the most relevant and best-fit AI engineering internship opportunities.
 
-    Analyze the resume to identify the student's:
+    Carefully review the student's resume to identify their:
 
-    Educational background including degree, major, university, relevant coursework
-    Work experience including past internships, jobs, projects
-    Skills including technical skills, programming languages, tools, soft skills
-    Extracurricular activities, leadership experience, awards
-    Career interests and industries/fields of interest if mentioned
-    Based on analyzing the student's resume and the available internship opportunities, identify the top 5 best matching internships for this student. Evaluate the match based on overlap in required/preferred skills, 
-    keywords, tool and programming language knowledge, related experience, relevant education/coursework, and alignment with career interests if known.
+    Educational background (degree, major, university, relevant coursework)
+    Work experience (past internships, jobs, projects)
+    Technical skills (programming languages, ML/AI frameworks, tools)
+    Relevant project experience (especially ML/AI projects)
+    Based on the student's qualifications, identify the top 5 AI internships that best match their skills and experience.
 
-    To determine the best matches, look for:
+    Look for:
+    Strong overlap in required/preferred skills, especially AI/ML/data skills
+    Matching programming languages and tools (Python, TensorFlow, PyTorch, etc.)
+    Relevant past project or internship experience in AI/ML
+    Alignment of education background and coursework
+    Prioritize matching the student with engineering-focused AI/ML internships over research-oriented internships. The goal is to find opportunities that will allow the student to apply their AI/ML engineering skills in a practical, hands-on way.
 
-    Overlap in required/preferred skills, especially AI/ML skills
-    Keyword matches
-    Matching tools and programming languages
-    Relevant past internship or project experience
-    Alignment of education and coursework
-    Matching career interests and industry/company preferences
-    By analyzing the student's background from multiple angles and thoughtfully matching them to a curated list of the most relevant AI internships, you will play a pivotal role in kickstarting their AI career journey.
-    
+    By carefully analyzing the student's AI/ML domain qualifications and matching them with the most relevant internships, you will play a key role in launching their AI career.  If a student focusing on engineering, find the most compatible engineering ones; if it's research, find research related ones
+ 
     output of list of internships in below format: 
     {
     "name": "",
