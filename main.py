@@ -173,7 +173,7 @@ class generate_analysis(dspy.Signature):
     Include relevant coursework details in the justification if it aligns well with the internship focus.
     Skill and Experience Match:
     Identify strong overlap between the internship's required skills (programming languages, ML/AI frameworks, tools) and the student's skills listed on the resume.
-    Priotize matches between specific tools and frameworks mentioned in both the resume and internship description.
+    Make sure  specific tools and frameworks mentioned in both the resume and internship description matches or relevant experience found.
     Project Experience:
     Analyze the student's past projects and internships for relevance to the internship requirements.
     Highlight projects that demonstrate similar problem-solving approaches or technological skills sought by the internship.

@@ -27,7 +27,7 @@ def resume_into_json(resume):
                     {"role": "user", "content": prompt}
             ]
         ).content[0].text
-
+    
     return json.loads(response)
 
 def company_url(company):
