@@ -12,7 +12,7 @@ import nltk
 from PyPDF2 import PdfReader
 import time
 
-gpt4 = dspy.OpenAI(model="gpt-3.5-turbo-1106")
+gpt4 = dspy.OpenAI(model="gpt-4-0125-preview")
 
 url = "https://internships-hc3oiv0y.weaviate.network"
 apikey = os.getenv("WCS_API_KEY")
