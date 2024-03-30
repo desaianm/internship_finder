@@ -168,12 +168,11 @@ class generate_analysis(dspy.Signature):
     Based on the student's qualifications, identify the top 5 AI internships that best match their skills and experience.
 
     Look for:
+    Firstly, make sure education background in resume. if it does not have master's degree, don't consider research internships
     Strong overlap in required/preferred skills, especially AI/ML/data skills
     Matching programming languages and tools (Python, TensorFlow, PyTorch, etc.)
     Relevant past project or internship experience in AI/ML
     Alignment of education background and coursework
-    Prioritize matching the student with engineering-focused AI/ML internships over research-oriented internships. The goal is to find opportunities that will allow the student to apply their AI/ML engineering skills in a practical, hands-on way.
-
     By carefully analyzing the student's AI/ML domain qualifications and matching them with the most relevant internships, you will play a key role in launching their AI career.  If a student focusing on engineering, find the most compatible engineering ones; if it's research, find research related ones
  
     output of list of internships in below format: 
