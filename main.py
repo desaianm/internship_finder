@@ -179,21 +179,21 @@ class generate_analysis(dspy.Signature):
     Additional Considerations:
     Prioritize internships with a strong match across multiple criteria (education, skills, experience) for the top rankings.
     
-    In addition to the previous criteria, make sure internships found are:
+    In addition to the previous criteria, make sure internships found have the following characteristics:
     Does not have "research" or "researcher" in the title, description, or required skills.
     Focus on areas like "development," "engineering," "application," or "implementation" which align better with practical experience.
 
     output of list of internships in below format: 
     
     Output:
-    list of internships (JSON Array):  Provide a JSON array containing information on the top 5 internship opportunities that best match the student's profile based on the information in their resume. Each element in the array should be a JSON object with the following properties:
+    list of internships (JSON Array):  Provide a JSON array containing information on the top internship opportunities that best match the student's profile based on the information in their resume. Each element in the array should be a JSON object with the following properties:
 
     "name" (string): Name of the internship opportunity.
     "company" (string): Name of the company offering the internship.
     "apply_link" (string): Link to apply for the internship .
     "match_analysis" (string): A detailed analysis explaining why it's a good fit for the student. This analysis should highlight specific skills, experiences, and educational background aspects from the student's resume that align with the internship requirements.
     
-    No Matches: If no internships are a good fit, return "None".
+    No Matches: If no internships are a good fit, return  None
     
     
     """
