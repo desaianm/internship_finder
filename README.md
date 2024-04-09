@@ -20,8 +20,7 @@ Welcome to **Resume Finder** – an interactive web application to help you disc
 1. **Clone the repository:**
 
    ```bash
-   git clone https://github.com/your-username/resume-finder.git
-   cd resume-finder
+   git clone https://github.com/desaianm/internship_finder.git
    ```
 
 2. **Install dependencies:**
