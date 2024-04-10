@@ -1,4 +1,4 @@
-# 📄 Resume Finder
+# 📄 Internship Finder
 
 Welcome to **Resume Finder** – an interactive web application to help you discover internship opportunities tailored to your resume!
 
