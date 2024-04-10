@@ -14,7 +14,7 @@ import time
 
 gpt4 = dspy.OpenAI(model="gpt-4-0125-preview",temperature=0.2)
 
-url = "https://internships-hc3oiv0y.weaviate.network"
+url = "https://internship-finder-52en6hka.weaviate.network"
 apikey = os.getenv("WCS_API_KEY")
 openai_api_key = os.getenv("OPENAI_API_KEY")
 
