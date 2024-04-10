@@ -12,8 +12,8 @@ Welcome to **Resume Finder** – an interactive web application to help you disc
 ## 💻 Technologies Used
 
 - [Streamlit](https://streamlit.io/): Python library for building interactive web applications.
-- [OpenAI Dspy](https://openai.com/dspy): Natural language processing library for text generation and analysis.
-- [Weaviate](https://www.semi.technology/): Semantic vector search engine for advanced searches.
+- [OpenAI Dspy](https://dspy-docs.vercel.app/): Natural language processing library for text generation and analysis.
+- [Weaviate](https://weaviate.io/): Hybrid search engine for advanced searches.
 
 ## 🛠️ Installation
 
