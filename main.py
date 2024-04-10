@@ -156,28 +156,40 @@ def get_resume():
 
 class generate_analysis(dspy.Signature):
     """
-    Role: As a matchmaking manager, your task is to connect students with AI engineering internship opportunities that best align with their academic and professional background. Your matchmaking algorithm should analyze and compare the details of student resumes against internship listings to identify the most suitable matches.
+    Your Role:
+
+    You are an AI-powered ATS (Applicant Tracking System) matchmaking tool specializing in connecting students with the perfect AI engineering internship opportunities.
 
     Input:
 
-    Student Resume (Text): Contains details like degree, major, university, relevant coursework, work experience, technical skills, and ML/AI project experience.
-    Internship Listings: A collection of AI engineering internship descriptions detailing required skills, experience, and educational requirements.
+    Student Resume (Text): This text will contain the student's educational background (degree, major, university, relevant coursework), work experience (past internships, jobs, projects), technical skills (programming languages, ML/AI frameworks, tools), and relevant project experience (especially ML/AI projects).
+    Internship Listings (JSON): This JSON data structure will contain information on various AI engineering internships, including descriptions, required skills and experience, and educational requirements (e.g., minimum degree level).
     Matching Criteria:
 
-    Educational Background: Prioritize matches where the student's education level (undergraduate, graduate, PhD) and major directly align with the internship's requirements. Leverage relevant coursework to strengthen matches related to the internship's focus.
-    Skill and Experience Match: Look for a strong correlation between the skills (e.g., programming languages, ML/AI frameworks, tools) required by the internship and those listed on the student's resume. Emphasize matches where specific tools and frameworks are common to both the student's resume and the internship requirements.
-    Project Experience: Evaluate the student's project work and internships for their relevance to the internship's technical demands, highlighting projects that showcase the technological competencies sought by the internship.
-    Additional Considerations: Exclude internships that emphasize research roles. Instead, focus on opportunities related to "development," "engineering," "application," or "implementation," which are more aligned with practical experiences.
+    Educational Background:
+    Consider degree level (undergraduate, graduate, PhD) and major for matching.
+    Prioritize internships that don't require a Master's or PhD for students who are not in those programs.
+    Include relevant coursework details in the justification if it aligns well with the internship focus.
+    Skill and Experience Match:
+    Identify strong overlap between the internship's required skills (programming languages, ML/AI frameworks, tools) and the student's skills listed on the resume.
+    Give extra weight to matches between specific tools and frameworks mentioned in both the resume and internship description.
+    Project Experience:
+    Analyze the student's past projects and internships for relevance to the internship requirements.
+    Highlight projects that demonstrate similar problem-solving approaches or technological skills sought by the internship.
+    Additional Considerations:
+    Prioritize internships with a strong match across multiple criteria (education, skills, experience) for the top rankings.
+    If multiple internships have similar matching scores, consider factors like company reputation, project focus, or internship location (if available) to break the tie.
+    Don't recommend internships that require skills or experience the student doesn't have unless the student has a strong foundation in related areas.
+    Exclude research internships that includes research, thesis, or publication requirements or has research in title, description.
+    For analysis, provide a match analysis for each internship listing, highlighting the key points of alignment between the student's resume and the internship requirements.
 
-    Output: The system should strictly return a JSON array mentioned below.  Do not include any explanatory text or additional information outside of this JSON structure.
+    output of list of internships in below format: 
     {
-        "name":"",
-        "company":"",
-        "apply_link":"",
-        "match_analysis":""
-        }
-
-    If no suitable matches are found, return None.
+    "name": "",
+    "company": "",
+    "apply_link": "",
+    "match_analysis": ""
+    }
     """
     
     context = dspy.InputField(desc="Internships")
