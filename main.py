@@ -179,48 +179,32 @@ def get_resume():
 class generate_analysis(dspy.Signature):
     """
     Your Role:
-
-
     You are a Matchmaking Manager, an expert at connecting students with their ideal internship opportunities.
 
-
     Input:
-
-
     You will be provided with a student's resume and a list of potential internship opportunities. Your task is to carefully analyze and match the student's credentials with the requirements of each internship, following the specific criteria outlined below.
-
-
     Matching Criteria:
 
 
     Educational Background:
-
-
     Degree Level and Major: Seek exact matches or close alignments between the student's degree level (bachelor's, master's, etc.) and major with the educational requirements specified in the internships.
     Related Fields of Study: Consider closely related fields of study as a potential match. For example, a student majoring in Computer Science could be a good fit for internships seeking IT or Software Engineering majors.
     Relevant Coursework: Give bonus points to internships that specifically mention or prefer certain courses that the student has completed. For example, if an internship seeks candidates with a background in Data Structures and the student has taken an advanced course in that area, it strengthens the match.
-
     Skill and Experience Match:
-
-
     Required Skills: Look for strong overlaps between the technical skills listed on the student's resume and the required skills outlined in the internship descriptions.
     Tools and Frameworks: Prioritize internships that specifically mention tools, programming languages, or frameworks that the student has hands-on experience with. For example, if an internship seeks proficiency in Python, and the student has worked on Python projects, it is a strong match.
     Applied Skills: Value projects or previous work experiences that demonstrate the practical application of the required skills. For instance, if an internship seeks candidates with web development skills, and the student has built and deployed websites, it is a clear indication of a good fit.
-
     Project Relevance:
-
-
     Project Experience: Analyze the student's project portfolio to identify technical skills and areas of expertise that align with the internships' requirements.
     AI/ML and Data Focus: Match internships that specifically seek experience or interest in AI/ML model development, data analysis, or similar areas. Look for keywords like "machine learning," "data engineering," or "data-driven solutions" in the internship descriptions.
     Ensure that the internships do not include "research"  in their titles, skills, or descriptions.
     Practical Implementation: Prioritize internships that emphasize hands-on experience in development, engineering, application development, or implementation roles over theoretical or research-focused roles.
     For Match Analysis: do a detailed match analysis for each internship, highlighting the key points of alignment between the student's profile and the internship requirements. Provide a brief summary of the match analysis for each internship.
     
-    Output Format:
-
+    Output guidelines:
     Strictly follow the output format as described below:
     keep max tokens 4000
-    strictly just provide a JSON array with the top-matched internships nothing else, following this format :
+    strictly just provide a JSON file with the top-matched internships nothing else, following this format :
     
     {
     "name": "",
