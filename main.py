@@ -7,14 +7,14 @@ import streamlit as st
 from typing import Optional, List
 from datetime import datetime
 from pydantic import BaseModel, Field, HttpUrl
-from tools import resume_into_json, company_url
+from tools import company_url, resume_into_json
 import nltk
 from PyPDF2 import PdfReader
-import time
+import cohere
 
-gpt4 = dspy.OpenAI(model="gpt-4-0125-preview")
+co_api_key = os.getenv("CO_API_KEY")
 
-url = "https://internships-hc3oiv0y.weaviate.network"
+url = "https://internship-finder-52en6hka.weaviate.network"
 apikey = os.getenv("WCS_API_KEY")
 openai_api_key = os.getenv("OPENAI_API_KEY")
 
@@ -28,11 +28,11 @@ weaviate_client = weaviate.connect_to_wcs(
     
 )
 
+cohere = dspy.Cohere(model='command-r-plus',api_key=co_api_key)
 
 retriever_model = WeaviateRM("Internship", weaviate_client=weaviate_client)
-questions = weaviate_client.collections.get("Internship")
 
-dspy.settings.configure(lm=gpt4,rm=retriever_model)
+dspy.settings.configure(lm=cohere,rm=retriever_model)
 # Weaviate client configuration
 st.title("Internship Finder")
 my_bar = st.progress(0)
@@ -50,9 +50,24 @@ class Out_Internship(BaseModel):
     output: list[JobListing] = Field(description="list of internships")  
 
 def search_datbase(query):
+    url = "https://internship-finder-52en6hka.weaviate.network"
+    apikey = os.getenv("WCS_API_KEY")
+    openai_api_key = os.getenv("OPENAI_API_KEY")
+
+# Connect to Weaviate
+    weaviate_client = weaviate.connect_to_wcs(
+    cluster_url=url,  
+    auth_credentials=weaviate.auth.AuthApiKey(apikey),
+        headers={
+        "X-OpenAI-Api-Key": openai_api_key  
+    }  
+    
+    )
+    questions = weaviate_client.collections.get("Internship")
+
     response = questions.query.hybrid(
         query=query,
-        limit=7
+        limit=10
     )
 
     interns = []
@@ -61,7 +76,7 @@ def search_datbase(query):
     for item in response.objects:
         interns.append(item.properties) 
     
-
+    
     context = json.dumps(interns)
     return json.loads(context)
 
@@ -75,7 +90,6 @@ def check_resume(resume):
                 
                 # Extract text from the page
                 text += page.extract_text()
-    nltk.download('punkt')  # Ensure the tokenizer is available
     tokens = nltk.word_tokenize(text)
     
     # Check if the total character count of all tokens exceeds the limit
@@ -97,14 +111,13 @@ def check_resume(resume):
 
 
 class Internship_finder(dspy.Module):
-    lm = dspy.OpenAI(model='gpt-3.5-turbo', temperature=0.3)
+    cohere = dspy.Cohere(model='command-r-plus',api_key=co_api_key)
 
-    dspy.settings.configure(lm=lm, rm=weaviate_client)
-
+    dspy.settings.configure(lm=cohere)
     def __init__(self):
         super().__init__()
         self.generate_query = [dspy.ChainOfThought(generate_query) for _ in range(3)]
-        self.generate_analysis = dspy.Predict(generate_analysis,max_tokens=4000) 
+        self.generate_analysis = dspy.Predict(generate_analysis,max_tokens=5000) 
 
     def forward(self, resume):
         #resume to pass as context 
@@ -116,13 +129,14 @@ class Internship_finder(dspy.Module):
             info=search_datbase(query)
             passages.append(info)
 
-        context = deduplicate(passages)    
-        context.append(resume)
-        my_bar.progress(60,text="Generating Analysis")
+        context = deduplicate(passages)  
+        my_bar.progress(60,text="Doing Analysis")
             
         analysis = self.generate_analysis(resume=str(resume), context=context).output
               
         return analysis
+    
+
 
 def deduplicate(context):
         """
@@ -155,39 +169,67 @@ def get_resume():
     return resume
 
 
+
 class generate_analysis(dspy.Signature):
     """
-    You are an expert matchmaking manager for students and AI companies. Your goal is to analyze a student's resume and match it to the most relevant and best-fit AI engineering internship opportunities.
+    Your Role:
 
-    Carefully review the student's resume to identify their:
 
-    Educational background (degree, major, university, relevant coursework)
-    Work experience (past internships, jobs, projects)
-    Technical skills (programming languages, ML/AI frameworks, tools)
-    Relevant project experience (especially ML/AI projects)
-    Based on the student's qualifications, identify the top 5 AI internships that best match their skills and experience.
+    You are a Matchmaking Manager, an expert at connecting students with their ideal internship opportunities.
 
-    Look for:
-    Strong overlap in required/preferred skills, especially AI/ML/data skills
-    Matching programming languages and tools (Python, TensorFlow, PyTorch, etc.)
-    Relevant past project or internship experience in AI/ML
-    Alignment of education background and coursework
-    Prioritize matching the student with engineering-focused AI/ML internships over research-oriented internships. The goal is to find opportunities that will allow the student to apply their AI/ML engineering skills in a practical, hands-on way.
 
-    By carefully analyzing the student's AI/ML domain qualifications and matching them with the most relevant internships, you will play a key role in launching their AI career.  If a student focusing on engineering, find the most compatible engineering ones; if it's research, find research related ones
- 
-    output of list of internships in below format: 
+    Input:
+
+
+    You will be provided with a student's resume and a list of potential internship opportunities. Your task is to carefully analyze and match the student's credentials with the requirements of each internship, following the specific criteria outlined below.
+
+
+    Matching Criteria:
+
+
+    Educational Background:
+
+
+    Degree Level and Major: Seek exact matches or close alignments between the student's degree level (bachelor's, master's, etc.) and major with the educational requirements specified in the internships.
+    Related Fields of Study: Consider closely related fields of study as a potential match. For example, a student majoring in Computer Science could be a good fit for internships seeking IT or Software Engineering majors.
+    Relevant Coursework: Give bonus points to internships that specifically mention or prefer certain courses that the student has completed. For example, if an internship seeks candidates with a background in Data Structures and the student has taken an advanced course in that area, it strengthens the match.
+
+    Skill and Experience Match:
+
+
+    Required Skills: Look for strong overlaps between the technical skills listed on the student's resume and the required skills outlined in the internship descriptions.
+    Tools and Frameworks: Prioritize internships that specifically mention tools, programming languages, or frameworks that the student has hands-on experience with. For example, if an internship seeks proficiency in Python, and the student has worked on Python projects, it is a strong match.
+    Applied Skills: Value projects or previous work experiences that demonstrate the practical application of the required skills. For instance, if an internship seeks candidates with web development skills, and the student has built and deployed websites, it is a clear indication of a good fit.
+
+    Project Relevance:
+
+
+    Project Experience: Analyze the student's project portfolio to identify technical skills and areas of expertise that align with the internships' requirements.
+    AI/ML and Data Focus: Match internships that specifically seek experience or interest in AI/ML model development, data analysis, or similar areas. Look for keywords like "machine learning," "data engineering," or "data-driven solutions" in the internship descriptions.
+    Ensure that the internships do not include "research"  in their titles, skills, or descriptions.
+    Practical Implementation: Prioritize internships that emphasize hands-on experience in development, engineering, application development, or implementation roles over theoretical or research-focused roles.
+    For Match Analysis: do a detailed match analysis for each internship, highlighting the key points of alignment between the student's profile and the internship requirements. Provide a brief summary of the match analysis for each internship.
+    
+    Output Format:
+
+    Strictly follow the output format as described below:
+    Provide a JSON array with the top-matched internships, following this format:
+    
     {
     "name": "",
     "company": "",
     "apply_link": "",
-    "match_analysis": ""
+    "match_analysis":""
     }
+    No Matches: If no internships are a good fit, return None.
+
+    make sure to return only json array.
+
     """
     
     context = dspy.InputField(desc="Internships")
     resume = dspy.InputField(desc="resume")
-    output = dspy.OutputField(desc="list of listings",type=list[JobListing])
+    output = dspy.OutputField(desc="list of internships",type=list[JobListing])
 
 class generate_query(dspy.Signature):
     """
@@ -206,6 +248,7 @@ def main():
         
     file = st.file_uploader("Upload Resume to get started", type=["pdf"])
     my_bar.progress(0,text="Starting...") 
+    
     if file is not None:
         msg = st.toast("Resume Uploaded")
         if check_resume(file):
@@ -219,27 +262,31 @@ def main():
             
             generate_analysis = analysis(resume)
 
-            st.subheader("List of Internships :")
+            print(generate_analysis)
 
-            col_company, col_url = st.columns([2,6])
-            
-            
-            interns = json.loads(generate_analysis)
-            my_bar.progress(100, "Internships Found !!")
-            with col_company:
-                    for intern in interns:
-                        st.link_button(intern["company"],company_url(intern["company"]))
+            if generate_analysis != "None":
+                st.subheader("List of Internships:")
+                col_company, col_url = st.columns([2,6])
+                interns = json.loads(generate_analysis)
+                my_bar.progress(100, "Internships Found !!")
+              
+                with col_company:
+                        for intern in interns:
+                            st.link_button(intern["company"],company_url(intern["company"]))
+                            
+                    
+                with col_url:
+                        for intern in interns:
+                            st.link_button(intern["name"], intern["apply_link"])
+                            with st.status("Match Analysis"):
+                                st.write(intern["match_analysis"])
                 
-            with col_url:
-                    for intern in interns:
-                        st.link_button(intern["name"], intern["apply_link"])
-                        with st.status("Match Analysis"):
-                            st.write(intern["match_analysis"])
 
+            else:
+                my_bar.progress(100, "Sorry, No Internships Found for you !!")
+                st.write(" We are adding more internships every day, please check back later.")
             
-            if interns is None:
-                msg.toast("No Internships Found")    
-            msg.toast("Internships Found !!")
+            
         else:
             st.warning("Invalid File Uploaded !!")
             my_bar.progress(0,text="Invalid File Uploaded")

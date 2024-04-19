@@ -1,7 +1,7 @@
 dspy-ai
-weaviate-client
-streamlit
+weaviate-client==4.5.4
+streamlit==1.32.2
 pydantic
 PyPDF2
 nltk
-cohere
+cohere==5.2.1
