@@ -24,7 +24,7 @@ def resume_into_json(resume):
     response = co.generate(
         model='command-r-plus',
         prompt=prompt,
-        max_tokens=5000,
+        max_tokens=10000,
         num_generations=1,
         temperature=0.2,
         
