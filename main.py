@@ -154,9 +154,7 @@ def get_resume():
      
     return resume
 
-def company_button(name):
-    company_info = get_company_info(name)
-    return company_info
+
 
 class generate_analysis(dspy.Signature):
     """
@@ -211,6 +209,7 @@ class generate_analysis(dspy.Signature):
     }
     No Matches: If no internships are a good fit, return None.
 
+    make sure to return only json array.
 
     """
     
