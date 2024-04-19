@@ -4,4 +4,4 @@ streamlit
 pydantic
 PyPDF2
 nltk
-cohere
+cohere==5.2.1
