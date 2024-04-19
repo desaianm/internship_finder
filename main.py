@@ -64,7 +64,6 @@ def search_datbase(query):
     
     
     context = json.dumps(interns)
-    weaviate_client.close()
     return json.loads(context)
 
 def check_resume(resume):
