@@ -68,7 +68,7 @@ def search_datbase(query):
 
     response = questions.query.hybrid(
         query=query,
-        limit=10
+        limit=3
     )
 
     interns = []
