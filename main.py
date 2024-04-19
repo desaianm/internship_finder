@@ -92,6 +92,7 @@ def check_resume(resume):
                 
                 # Extract text from the page
                 text += page.extract_text()
+    nltk.download('punkt')
     tokens = nltk.word_tokenize(text)
     
     # Check if the total character count of all tokens exceeds the limit
