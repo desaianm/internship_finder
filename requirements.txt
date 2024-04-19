@@ -1,4 +1,4 @@
-dspy-ai==2.4.0
+git+https://github.com/stanfordnlp/dspy.git
 weaviate-client==4.5.4
 streamlit==1.32.2
 pydantic
