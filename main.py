@@ -1,5 +1,4 @@
 import dspy
-import dsp
 import os
 from dspy.retrieve.weaviate_rm import WeaviateRM
 import weaviate
@@ -29,7 +28,7 @@ weaviate_client = weaviate.connect_to_wcs(
     
 )
 
-cohere = dsp.Cohere(model='command-r-plus',api_key=co_api_key)
+cohere = dspy.Cohere(model='command-r-plus',api_key=co_api_key)
 
 retriever_model = WeaviateRM("Internship", weaviate_client=weaviate_client)
 questions = weaviate_client.collections.get("Internship")
@@ -98,7 +97,7 @@ def check_resume(resume):
 
 
 class Internship_finder(dspy.Module):
-    cohere = dsp.Cohere(model='command-r-plus',api_key=co_api_key)
+    cohere = dspy.Cohere(model='command-r-plus',api_key=co_api_key)
 
     dspy.settings.configure(lm=cohere)
     def __init__(self):
@@ -211,6 +210,7 @@ class generate_analysis(dspy.Signature):
     "match_analysis":""
     }
     No Matches: If no internships are a good fit, return None.
+
 
     """
     
