@@ -1,4 +1,5 @@
 import dspy
+from dspy import dsp
 import os
 from dspy.retrieve.weaviate_rm import WeaviateRM
 import weaviate
@@ -28,7 +29,7 @@ weaviate_client = weaviate.connect_to_wcs(
     
 )
 
-cohere = dspy.Cohere(model='command-r-plus',api_key=co_api_key)
+cohere = dsp.Cohere(model='command-r-plus',api_key=co_api_key)
 
 retriever_model = WeaviateRM("Internship", weaviate_client=weaviate_client)
 
@@ -111,7 +112,7 @@ def check_resume(resume):
 
 
 class Internship_finder(dspy.Module):
-    cohere = dspy.Cohere(model='command-r-plus',api_key=co_api_key)
+    cohere = dsp.Cohere(model='command-r-plus',api_key=co_api_key)
 
     dspy.settings.configure(lm=cohere)
     def __init__(self):
