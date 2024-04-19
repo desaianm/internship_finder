@@ -1,0 +1,39 @@
+{
+    "links": [{
+    }],
+    "Summary":"",
+    "Education": [
+      {
+        "Institution": "",
+        "Degree": "",
+        "FieldOfStudy": "",
+        "StartDate": "",
+        "EndDate": "",
+        "Achievements": []
+      }
+    ],
+    "Skills":[{
+      
+    }],
+
+    "Projects":[{
+      "ProjectName":"",
+      "StartDate":"",
+      "EndDate": "",
+      "Responsibilities": []
+
+    }],
+    "Experience": [
+      {
+        "CompanyName": "",
+        "Role": "",
+        "Location": "",
+        "StartDate": "",
+        "EndDate": "",
+        "Responsibilities": []
+      }
+    ],
+    "Activities": [],
+    "Interests": [],
+    "AdditionalInformation": ""
+  }

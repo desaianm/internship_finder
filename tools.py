@@ -1,6 +1,5 @@
 import json
 from PyPDF2 import PdfReader
-from openai import OpenAI
 import os
 import cohere
 import requests
