@@ -216,7 +216,7 @@ class generate_analysis(dspy.Signature):
     Output Format:
 
     Strictly follow the output format as described below:
-    Provide a JSON array with the top-matched internships, following this format:
+    Provide a JSON array with the top-matched internships, following this format and max tokens 4000:
     
     {
     "name": "",
@@ -226,7 +226,7 @@ class generate_analysis(dspy.Signature):
     }
     No Matches: If no internships are a good fit, return None.
 
-    make sure to return only json array.
+    strictly make sure to return only json array.
 
     """
     
