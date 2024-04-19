@@ -31,7 +31,6 @@ weaviate_client = weaviate.connect_to_wcs(
 cohere = dspy.Cohere(model='command-r-plus',api_key=co_api_key)
 
 retriever_model = WeaviateRM("Internship", weaviate_client=weaviate_client)
-questions = weaviate_client.collections.get("Internship")
 
 dspy.settings.configure(lm=cohere,rm=retriever_model)
 # Weaviate client configuration
@@ -51,6 +50,21 @@ class Out_Internship(BaseModel):
     output: list[JobListing] = Field(description="list of internships")  
 
 def search_datbase(query):
+    url = "https://internship-finder-52en6hka.weaviate.network"
+    apikey = os.getenv("WCS_API_KEY")
+    openai_api_key = os.getenv("OPENAI_API_KEY")
+
+# Connect to Weaviate
+    weaviate_client = weaviate.connect_to_wcs(
+    cluster_url=url,  
+    auth_credentials=weaviate.auth.AuthApiKey(apikey),
+        headers={
+        "X-OpenAI-Api-Key": openai_api_key  
+    }  
+    
+    )
+    questions = weaviate_client.collections.get("Internship")
+
     response = questions.query.hybrid(
         query=query,
         limit=10
