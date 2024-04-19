@@ -1,34 +1,37 @@
-import anthropic
 import json
 from PyPDF2 import PdfReader
 from openai import OpenAI
 import os
+import cohere
+import requests
 
+with open("resume_temp.json") as f:
+    file = json.load(f)
+
+temp = json.dumps(file)
 
 def resume_into_json(resume):
-    api_key = os.getenv("CLAUDE_API_KEY")
-    client = anthropic.Anthropic(
-        api_key=api_key,
-    )
-
+    cohere_api_key = os.getenv("CO_API_KEY")
+    co = cohere.Client(cohere_api_key)
 
     pdf_reader = PdfReader(resume)
-    text=""
+    text = ""
     for page_num in range(len(pdf_reader.pages)):
-            page = pdf_reader.pages[page_num]
-            text += page.extract_text()
+        page = pdf_reader.pages[page_num]
+        text += page.extract_text()
 
-    prompt = f" Act as Master in extracting data from resume.don't give any explantion. please analyze and convert resume data from this {text} into  json, remove data like name, email or personal information and  please return only json file  "
+    prompt = f"Act as Master in extracting data from resume. Don't give any explanation. Please analyze and convert resume data from this {text} into JSON, remove data like name, email, or personal information, and please return only the JSON file."
 
-    response = client.messages.create(
-                model="claude-3-haiku-20240307",
-                max_tokens=4000,
-                messages=[
-                    {"role": "user", "content": prompt}
-            ]
-        ).content[0].text
-    
-    return json.loads(response)
+    response = co.generate(
+        model='command-r-plus',
+        prompt=prompt,
+        max_tokens=5000,
+        num_generations=1,
+        temperature=0.2,
+        
+    )
+
+    return json.loads(response.generations[0].text)
 
 def company_url(company):
 
@@ -38,3 +41,13 @@ def company_url(company):
     company = (company.lower()).replace(" ", "-")
 
     return f"https://www.jeezai.com/companies/{company}/"
+
+
+def get_company_info(company):
+    data = requests.post(
+        "https://advanced-research-agents.onrender.com",
+        json={
+            "query": company,
+        }
+    )
+    return data.json()
