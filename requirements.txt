@@ -1,5 +1,5 @@
 dspy-ai
-weaviate-client
+weaviate-client==4.5.4
 streamlit
 pydantic
 PyPDF2
