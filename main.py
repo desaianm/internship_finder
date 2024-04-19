@@ -14,7 +14,9 @@ from PyPDF2 import PdfReader
 import cohere
 
 co_api_key = os.getenv("CO_API_KEY")
+nltk.download('punkt')
 
+# Weaviate client configuration
 url = "https://internship-finder-52en6hka.weaviate.network"
 apikey = os.getenv("WCS_API_KEY")
 openai_api_key = os.getenv("OPENAI_API_KEY")
@@ -93,7 +95,7 @@ def check_resume(resume):
                 # Extract text from the page
                 text += page.extract_text()
     
-    nltk.download('punkt')
+    
     tokens = nltk.word_tokenize(text)
     
     # Check if the total character count of all tokens exceeds the limit
@@ -121,7 +123,7 @@ class Internship_finder(dspy.Module):
     def __init__(self):
         super().__init__()
         self.generate_query = [dspy.ChainOfThought(generate_query) for _ in range(3)]
-        self.generate_analysis = dspy.Predict(generate_analysis,max_tokens=5000) 
+        self.generate_analysis = dspy.Predict(generate_analysis,max_tokens=4000) 
 
     def forward(self, resume):
         #resume to pass as context 
