@@ -120,7 +120,7 @@ class Internship_finder(dspy.Module):
     def __init__(self):
         super().__init__()
         self.generate_query = [dspy.ChainOfThought(generate_query) for _ in range(3)]
-        self.generate_analysis = dspy.Predict(generate_analysis,max_tokens=4000) 
+        self.generate_analysis = dspy.Predict(generate_analysis,max_tokens=5000) 
 
     def forward(self, resume):
         #resume to pass as context 
