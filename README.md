@@ -13,7 +13,7 @@ Welcome to **Resume Finder** – an interactive web application to help you disc
 
 - [Streamlit](https://streamlit.io/): Python library for building interactive web applications.
 - [OpenAI Dspy](https://openai.com/dspy): Natural language processing library for text generation and analysis.
-- [Weaviate](https://www.semi.technology/): Semantic vector search engine for advanced searches.
+- [Weaviate](https://www.semi.technology/): Using Hybrid search engine for advanced searches.
 
 ## 🛠️ Installation
 
