@@ -1,4 +1,5 @@
 import dspy
+from dspy import dsp
 import os
 from dspy.retrieve.weaviate_rm import WeaviateRM
 import weaviate
@@ -28,7 +29,7 @@ weaviate_client = weaviate.connect_to_wcs(
     
 )
 
-cohere = dspy.Cohere(model='command-r-plus',api_key=co_api_key)
+cohere = dsp.Cohere(model='command-r-plus',api_key=co_api_key)
 
 retriever_model = WeaviateRM("Internship", weaviate_client=weaviate_client)
 
@@ -67,7 +68,7 @@ def search_datbase(query):
 
     response = questions.query.hybrid(
         query=query,
-        limit=10
+        limit=3
     )
 
     interns = []
@@ -78,6 +79,7 @@ def search_datbase(query):
     
     
     context = json.dumps(interns)
+    weaviate_client.close()
     return json.loads(context)
 
 def check_resume(resume):
@@ -90,6 +92,7 @@ def check_resume(resume):
                 
                 # Extract text from the page
                 text += page.extract_text()
+    nltk.download('punkt')
     tokens = nltk.word_tokenize(text)
     
     # Check if the total character count of all tokens exceeds the limit
@@ -111,7 +114,7 @@ def check_resume(resume):
 
 
 class Internship_finder(dspy.Module):
-    cohere = dspy.Cohere(model='command-r-plus',api_key=co_api_key)
+    cohere = dsp.Cohere(model='command-r-plus',api_key=co_api_key)
 
     dspy.settings.configure(lm=cohere)
     def __init__(self):
@@ -213,7 +216,7 @@ class generate_analysis(dspy.Signature):
     Output Format:
 
     Strictly follow the output format as described below:
-    Provide a JSON array with the top-matched internships, following this format:
+    Provide a JSON array with the top-matched internships, following this format and max tokens 4000:
     
     {
     "name": "",
@@ -223,7 +226,7 @@ class generate_analysis(dspy.Signature):
     }
     No Matches: If no internships are a good fit, return None.
 
-    make sure to return only json array.
+    strictly make sure to return only json array.
 
     """
     
