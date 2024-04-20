@@ -250,7 +250,7 @@ def main():
             
             my_bar.progress(30,text="Finding Internships")   
             
-            generate_analysis = analysis(resume)
+            generate_analysis = json.loads(analysis(resume))
 
             print(generate_analysis)
 
