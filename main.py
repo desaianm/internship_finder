@@ -252,12 +252,10 @@ def main():
             
             generate_analysis = json.loads(analysis(resume))
 
-            print(generate_analysis)
-
             if generate_analysis != "None":
                 st.subheader("List of Internships:")
                 col_company, col_url = st.columns([2,6])
-                interns = json.loads(generate_analysis)
+                interns = generate_analysis
                 my_bar.progress(100, "Internships Found !!")
               
                 with col_company:
