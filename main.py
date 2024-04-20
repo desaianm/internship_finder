@@ -2,19 +2,22 @@ import dspy
 from dspy import dsp
 import os
 from dspy.retrieve.weaviate_rm import WeaviateRM
+from weaviate.classes.init import AdditionalConfig, Timeout
 import weaviate
 import json
 import streamlit as st
 from typing import Optional, List
 from datetime import datetime
 from pydantic import BaseModel, Field, HttpUrl
-from tools import company_url, resume_into_json
+from tools import check_json, company_url, resume_into_json
 import nltk
 from PyPDF2 import PdfReader
 import cohere
 
 co_api_key = os.getenv("CO_API_KEY")
+nltk.download('punkt')
 
+# Weaviate client configuration
 url = "https://internship-finder-52en6hka.weaviate.network"
 apikey = os.getenv("WCS_API_KEY")
 openai_api_key = os.getenv("OPENAI_API_KEY")
@@ -25,7 +28,9 @@ weaviate_client = weaviate.connect_to_wcs(
     auth_credentials=weaviate.auth.AuthApiKey(apikey),
         headers={
         "X-OpenAI-Api-Key": openai_api_key  
-    }  
+    },additional_config=AdditionalConfig(
+        timeout=Timeout(init=2, query=45, insert=120)  # Values in seconds
+    ) 
     
 )
 
@@ -92,7 +97,7 @@ def check_resume(resume):
                 
                 # Extract text from the page
                 text += page.extract_text()
-    nltk.download('punkt')
+
     tokens = nltk.word_tokenize(text)
     
     # Check if the total character count of all tokens exceeds the limit
@@ -120,7 +125,7 @@ class Internship_finder(dspy.Module):
     def __init__(self):
         super().__init__()
         self.generate_query = [dspy.ChainOfThought(generate_query) for _ in range(3)]
-        self.generate_analysis = dspy.Predict(generate_analysis,max_tokens=5000) 
+        self.generate_analysis = dspy.Predict(generate_analysis,max_tokens=4000) 
 
     def forward(self, resume):
         #resume to pass as context 
@@ -176,57 +181,49 @@ def get_resume():
 class generate_analysis(dspy.Signature):
     """
     Your Role:
-
-
     You are a Matchmaking Manager, an expert at connecting students with their ideal internship opportunities.
 
-
     Input:
-
-
     You will be provided with a student's resume and a list of potential internship opportunities. Your task is to carefully analyze and match the student's credentials with the requirements of each internship, following the specific criteria outlined below.
-
-
     Matching Criteria:
 
 
     Educational Background:
-
-
     Degree Level and Major: Seek exact matches or close alignments between the student's degree level (bachelor's, master's, etc.) and major with the educational requirements specified in the internships.
     Related Fields of Study: Consider closely related fields of study as a potential match. For example, a student majoring in Computer Science could be a good fit for internships seeking IT or Software Engineering majors.
     Relevant Coursework: Give bonus points to internships that specifically mention or prefer certain courses that the student has completed. For example, if an internship seeks candidates with a background in Data Structures and the student has taken an advanced course in that area, it strengthens the match.
-
     Skill and Experience Match:
-
-
     Required Skills: Look for strong overlaps between the technical skills listed on the student's resume and the required skills outlined in the internship descriptions.
     Tools and Frameworks: Prioritize internships that specifically mention tools, programming languages, or frameworks that the student has hands-on experience with. For example, if an internship seeks proficiency in Python, and the student has worked on Python projects, it is a strong match.
     Applied Skills: Value projects or previous work experiences that demonstrate the practical application of the required skills. For instance, if an internship seeks candidates with web development skills, and the student has built and deployed websites, it is a clear indication of a good fit.
-
     Project Relevance:
-
-
     Project Experience: Analyze the student's project portfolio to identify technical skills and areas of expertise that align with the internships' requirements.
     AI/ML and Data Focus: Match internships that specifically seek experience or interest in AI/ML model development, data analysis, or similar areas. Look for keywords like "machine learning," "data engineering," or "data-driven solutions" in the internship descriptions.
     Ensure that the internships do not include "research"  in their titles, skills, or descriptions.
     Practical Implementation: Prioritize internships that emphasize hands-on experience in development, engineering, application development, or implementation roles over theoretical or research-focused roles.
-    For Match Analysis: do a detailed match analysis for each internship, highlighting the key points of alignment between the student's profile and the internship requirements. Provide a brief summary of the match analysis for each internship.
+    For Match Analysis: do a detailed match analysis for each internship, explaining how resume matches with internship. Provide a brief summary of the match analysis for each internship.
     
-    Output Format:
+    For Output:
+    Use the following JSON array format to provide the top-matched internships in a single array:
 
-    Strictly follow the output format as described below:
-    Provide a JSON array with the top-matched internships, following this format and max tokens 4000:
-    
-    {
-    "name": "",
-    "company": "",
-    "apply_link": "",
-    "match_analysis":""
-    }
-    No Matches: If no internships are a good fit, return None.
+    [
+        {
+            "name": "Job Title",
+            "company": "Company Name",
+            "apply_link": "Application Link",
+            "match_analysis": "Detailed match analysis here. Explain how the student's background matches the internship requirements, using specific examples."
+        },
+        {
+            "name": "Another Job Title",
+            "company": "Another Company",
+            "apply_link": "Application Link",
+            "match_analysis": "Provide a detailed match analysis for this internship opportunity as well, highlighting relevant matches."
+        }
+    ]
 
-    strictly make sure to return only json array.
+    If there are no suitable matches, return None. Ensure that no additional words or JSON annotations are included outside the code block.
+        
+
 
     """
     
@@ -263,14 +260,13 @@ def main():
             
             my_bar.progress(30,text="Finding Internships")   
             
-            generate_analysis = analysis(resume)
+            generate = analysis(resume)
+            print(generate)
 
-            print(generate_analysis)
-
-            if generate_analysis != "None":
+            if generate != "None":
                 st.subheader("List of Internships:")
                 col_company, col_url = st.columns([2,6])
-                interns = json.loads(generate_analysis)
+                interns = json.loads(generate)
                 my_bar.progress(100, "Internships Found !!")
               
                 with col_company:

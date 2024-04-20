@@ -1,7 +1,10 @@
 git+https://github.com/stanfordnlp/dspy.git
 weaviate-client==4.5.4
-streamlit==1.32.2
+streamlit
 pydantic
 PyPDF2
 nltk
+
 cohere
+
+
