@@ -2,6 +2,7 @@ import dspy
 from dspy import dsp
 import os
 from dspy.retrieve.weaviate_rm import WeaviateRM
+from weaviate.classes.init import AdditionalConfig, Timeout
 import weaviate
 import json
 import streamlit as st
@@ -27,7 +28,9 @@ weaviate_client = weaviate.connect_to_wcs(
     auth_credentials=weaviate.auth.AuthApiKey(apikey),
         headers={
         "X-OpenAI-Api-Key": openai_api_key  
-    }  
+    },additional_config=AdditionalConfig(
+        timeout=Timeout(init=2, query=45, insert=120)  # Values in seconds
+    ) 
     
 )
 
