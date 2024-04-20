@@ -50,3 +50,21 @@ def get_company_info(company):
         }
     )
     return data.json()
+
+def check_json(output):
+    cohere_api_key = os.getenv("CO_API_KEY")
+    co = cohere.Client(cohere_api_key)
+
+
+    prompt = f"{output} Check if above output is JSON file and valid or not. It should return json array"
+
+    response = co.generate(
+        model='command-r-plus',
+        prompt=prompt,
+        max_tokens=5000,
+        num_generations=1,
+        temperature=0.2,
+        
+    )
+
+    return json.loads(response.generations[0].text)

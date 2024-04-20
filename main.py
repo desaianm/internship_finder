@@ -9,7 +9,7 @@ import streamlit as st
 from typing import Optional, List
 from datetime import datetime
 from pydantic import BaseModel, Field, HttpUrl
-from tools import company_url, resume_into_json
+from tools import check_json, company_url, resume_into_json
 import nltk
 from PyPDF2 import PdfReader
 import cohere
@@ -253,13 +253,13 @@ def main():
             
             my_bar.progress(30,text="Finding Internships")   
             
-            generate_analysis = json.dumps(analysis(resume))
+            generate_analysis = check_json(analysis(resume))
             print(analysis(resume))
 
             if generate_analysis != "None":
                 st.subheader("List of Internships:")
                 col_company, col_url = st.columns([2,6])
-                interns = generate_analysis
+                interns = json.loads(generate_analysis)
                 my_bar.progress(100, "Internships Found !!")
               
                 with col_company:
