@@ -258,7 +258,7 @@ def main():
             if generate != "None":
                 st.subheader("List of Internships:")
                 col_company, col_url = st.columns([2,6])
-                interns = json.loads(generate)
+                interns = generate
                 my_bar.progress(100, "Internships Found !!")
               
                 with col_company:
