@@ -73,7 +73,7 @@ def search_datbase(query):
 
     response = questions.query.hybrid(
         query=query,
-        limit=10
+        limit=3
     )
 
     interns = []
@@ -97,8 +97,7 @@ def check_resume(resume):
                 
                 # Extract text from the page
                 text += page.extract_text()
-    
-    
+
     tokens = nltk.word_tokenize(text)
     
     # Check if the total character count of all tokens exceeds the limit
@@ -224,6 +223,7 @@ class generate_analysis(dspy.Signature):
 
     If there are no suitable matches, return None. Ensure that no additional words or JSON annotations are included outside the code block.
         
+
 
     """
     

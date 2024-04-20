@@ -4,4 +4,7 @@ streamlit
 pydantic
 PyPDF2
 nltk
+
 cohere
+
+
