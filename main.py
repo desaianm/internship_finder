@@ -253,7 +253,8 @@ def main():
             
             my_bar.progress(30,text="Finding Internships")   
             
-            generate_analysis = json.loads(analysis(resume))
+            generate_analysis = json.dumps(analysis(resume))
+            print(analysis(resume))
 
             if generate_analysis != "None":
                 st.subheader("List of Internships:")
