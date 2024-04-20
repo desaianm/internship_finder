@@ -143,7 +143,7 @@ class Internship_finder(dspy.Module):
             
         analysis = self.generate_analysis(resume=str(resume), context=context).output
               
-        return json.loads(analysis)
+        return analysis
     
 
 
@@ -202,21 +202,28 @@ class generate_analysis(dspy.Signature):
     AI/ML and Data Focus: Match internships that specifically seek experience or interest in AI/ML model development, data analysis, or similar areas. Look for keywords like "machine learning," "data engineering," or "data-driven solutions" in the internship descriptions.
     Ensure that the internships do not include "research"  in their titles, skills, or descriptions.
     Practical Implementation: Prioritize internships that emphasize hands-on experience in development, engineering, application development, or implementation roles over theoretical or research-focused roles.
-    For Match Analysis: do a detailed match analysis for each internship, highlighting the key points of alignment between the student's profile and the internship requirements. Provide a brief summary of the match analysis for each internship.
+    For Match Analysis: do a detailed match analysis for each internship, explaining how resume matches with internship. Provide a brief summary of the match analysis for each internship.
     
-    Output guidelines:
-    Strictly follow the output format as described below:
-    keep max tokens 4000
-    strictly just provide a JSON file with the top-matched internships nothing else, following this format :
-    
-    {
-    "name": "",
-    "company": "",
-    "apply_link": "",
-    "match_analysis":""
-    }
-    No Matches: If no internships are a good fit, return None.
+    For Output:
+    Use the following JSON array format to provide the top-matched internships in a single array:
 
+    [
+        {
+            "name": "Job Title",
+            "company": "Company Name",
+            "apply_link": "Application Link",
+            "match_analysis": "Detailed match analysis here. Explain how the student's background matches the internship requirements, using specific examples."
+        },
+        {
+            "name": "Another Job Title",
+            "company": "Another Company",
+            "apply_link": "Application Link",
+            "match_analysis": "Provide a detailed match analysis for this internship opportunity as well, highlighting relevant matches."
+        }
+    ]
+
+    If there are no suitable matches, return None. Ensure that no additional words or JSON annotations are included outside the code block.
+        
 
     """
     
@@ -254,11 +261,12 @@ def main():
             my_bar.progress(30,text="Finding Internships")   
             
             generate = analysis(resume)
+            print(generate)
 
             if generate != "None":
                 st.subheader("List of Internships:")
                 col_company, col_url = st.columns([2,6])
-                interns = generate
+                interns = json.loads(generate)
                 my_bar.progress(100, "Internships Found !!")
               
                 with col_company:
