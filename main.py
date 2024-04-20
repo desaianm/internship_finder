@@ -143,7 +143,7 @@ class Internship_finder(dspy.Module):
             
         analysis = self.generate_analysis(resume=str(resume), context=context).output
               
-        return analysis
+        return json.loads(analysis)
     
 
 
@@ -253,13 +253,12 @@ def main():
             
             my_bar.progress(30,text="Finding Internships")   
             
-            generate_analysis = check_json(analysis(resume))
-            print(analysis(resume))
+            generate = analysis(resume)
 
-            if generate_analysis != "None":
+            if generate != "None":
                 st.subheader("List of Internships:")
                 col_company, col_url = st.columns([2,6])
-                interns = json.loads(generate_analysis)
+                interns = json.loads(generate)
                 my_bar.progress(100, "Internships Found !!")
               
                 with col_company:
